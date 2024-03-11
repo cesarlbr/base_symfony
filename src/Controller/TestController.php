@@ -8,11 +8,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class TestController extends AbstractController
 {
-    #[Route('/test', name: 'app_test')]
-    public function index(): Response
+    #[Route('/test/{nom}', name: 'app_test')]
+    public function index($nom): Response
     {
         return $this->render('test/index.html.twig', [
-            'controller_name' => 'TestController',
+            'nom' => $nom,
+            'tableau' => [
+                ["route"=> "/", "label"=> "home"],
+                ["route"=> "/test", "label"=> "test"],
+                ["route"=> "/hello", "label"=> "hello"],
+            ], 
         ]);
     }
 
