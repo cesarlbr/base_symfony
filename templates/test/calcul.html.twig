@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calcul{% endblock %}
+
+{% block body %}
+    <p>{{ resultat }}</p>
+    {# exemple passage de variable de twig à JS #}
+    <script>
+        let number1 = "{{ nbr1 }}";
+        console.log("{{ nbr2 }}");
+    </script>
+{% endblock %}
