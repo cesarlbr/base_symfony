@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des articles{% endblock %}
+{% block title %}Detail article{% endblock %}
 
 {% block body %}
-<div class="flex-auto flex-col w-3/6 p-2 mx-auto">
-   {% for article in liste %}
+
     <div class="flex flex-col bg-white border shadow-sm rounded-xl p-4 md:p-5 dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
         <h3 class="text-lg font-bold text-gray-800 dark:text-white">
             {{article.titre }}
@@ -18,10 +17,7 @@
         <p class="mt-3 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
             {{ article.utilisateur.nom }} {{ article.utilisateur.prenom }}
         </p>
-        <a class="mt-3 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" 
-        {# route avec la méthode path de twig #}
-        href="{{ path('app_article_id', { id:article.id} ) }}">detail</a>
+        <a class="mt-3 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/article/{{article.id}}">detail</a>
     </div>
-   {% endfor %}
-</div>
+
 {% endblock %}

@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Utilisateur;
 use App\Entity\Article;
+use App\Entity\Categorie;
 use Faker;
 
 class AppFixtures extends Fixture
@@ -26,12 +27,22 @@ class AppFixtures extends Fixture
             $manager->persist($utilisateur);
             $utilisateurs[] = $utilisateur;
         }
+        $categories = [];
+        for ($i=0; $i <30 ; $i++) { 
+            $cat = new Categorie();
+            $cat->setNom($faker->word());
+            $manager->persist($cat);
+            $categories[]=$cat;
+        }
         for ($i=0; $i < 200 ; $i++) { 
             $article = new Article();
             $article->setTitre($faker->word());
             $article->setContenu($faker->text(200));
             $article->setDateAjout(new \DateTimeImmutable($faker->date('Y-m-d')));
             $article->setUtilisateur($utilisateurs[$faker->numberBetween(0, 49)]);
+            $article->addCategory($categories[$faker->numberBetween(0, 9)]);
+            $article->addCategory($categories[$faker->numberBetween(10, 19)]);
+            $article->addCategory($categories[$faker->numberBetween(20, 29)]);
             //mettre en cache l'objet 
             $manager->persist($article);
         }
