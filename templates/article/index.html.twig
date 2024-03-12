@@ -3,5 +3,14 @@
 {% block title %}Liste des articles{% endblock %}
 
 {% block body %}
-
+    <h2>{{ liste[0].titre }}</h2>
+    <p>{{ liste[0].contenu }}</p>
+    <p>{{ liste[0].dateAjout | date('d/m/Y')}}</p>
+    <p>{{ liste[0].utilisateur.nom }}</p>
+    <p>{{ liste[0].utilisateur.prenom }}</p>
+    <p>{{ liste[0].utilisateur.password }}</p>
+    
+    {% for article in liste %}
+        <p>{{ article.titre }}</p>
+    {% endfor %}
 {% endblock %}

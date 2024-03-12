@@ -21,7 +21,7 @@ class Article
     private ?string $contenu = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_ajout = null;
+    private ?\DateTimeInterface $dateAjout = null;
 
     #[ORM\ManyToOne]
     private ?Utilisateur $utilisateur = null;
@@ -57,12 +57,12 @@ class Article
 
     public function getDateAjout(): ?\DateTimeInterface
     {
-        return $this->date_ajout;
+        return $this->dateAjout;
     }
 
     public function setDateAjout(\DateTimeInterface $date_ajout): static
     {
-        $this->date_ajout = $date_ajout;
+        $this->dateAjout = $date_ajout;
 
         return $this;
     }
