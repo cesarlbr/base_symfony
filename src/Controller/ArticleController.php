@@ -9,7 +9,8 @@ use App\Repository\ArticleRepository;
 
 class ArticleController extends AbstractController
 {
-    public function __construct(private ArticleRepository $articleRepository) {      
+
+    public function __construct(private readonly ArticleRepository $articleRepository) {      
     }
 
     #[Route('/article', name: 'app_article')]
