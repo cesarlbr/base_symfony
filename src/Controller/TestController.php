@@ -36,8 +36,21 @@ class TestController extends AbstractController
     public function calcul(mixed $nbr1, mixed $nbr2) : Response 
     {
         if(is_numeric($nbr1) AND is_numeric($nbr2)) {
-            return new Response("Le résultat est égal à : ". ($nbr1+$nbr2));
+            $resultat = "Le résultat est égal à : ". ($nbr1+$nbr2);
         }
-        return new Response("Les paramètres ne sont pas des nombres");
+        else { 
+            $resultat = "Veuillez passer des nombres dans l'url";
+        }
+
+        return $this->render('test/calcul.html.twig',[
+            'resultat' => $resultat,
+            'tableau' => [
+                ["route"=> "/", "label"=> "home"],
+                ["route"=> "/test", "label"=> "test"],
+                ["route"=> "/hello", "label"=> "hello"],
+            ],
+            'nbr1' => $nbr1,
+            'nbr2' => $nbr2,
+        ]);
     }
 }
