@@ -10,11 +10,28 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Categorie;
 use App\Form\CategorieType;
 use App\Repository\CategorieRepository;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+
+
 
 class CategorieController extends AbstractController
 {
-    #[Route('/categorie/add', name : 'app_categorie_add')]
-    public function addCategorie(Request $request, EntityManagerInterface $em, CategorieRepository $catRepo) : Response 
+    private EntityManagerInterface $em;
+    private CategorieRepository $catRepo;
+    private NormalizerInterface $normalizer;
+
+    public function __construct(
+        EntityManagerInterface $entityManagerInterface,
+        CategorieRepository $categorieRepository,
+        NormalizerInterface $normalizerInterface
+    ) {
+        $this->em = $entityManagerInterface;
+        $this->catRepo = $categorieRepository;
+        $this->normalizer = $normalizerInterface;
+    }
+
+    #[Route('/categorie/add', name: 'app_categorie_add')]
+    public function addCategorie(Request $request): Response 
     {
         //créer un objet categorie
         $cat = new Categorie();
@@ -23,26 +40,37 @@ class CategorieController extends AbstractController
         //récupére le contenu de la requête
         $form->handleRequest($request);
         //vérifier quand le formulaire est submit
-        if($form->isSubmitted()  ) {
-            /* dd($form->getErrors()); */
-            //test si le catégorie n'existe pas
-            if(!$catRepo->findOneBy(["nom" => $cat->getNom()])) {
-                //mettre en cache
-                $em->persist($cat);
-                //enregistrer en BDD
-                $em->flush();
-                //message de confirmation
-                $type = "success";
-                $message = "La catégorie a été ajouté";
+        if ($form->isSubmitted()) {
+            //test si le formulaire est valide
+            if ($form->isValid()) {
+                //test si la catégorie n'existe pas
+                if (!$this->catRepo->findOneBy(["nom" => $cat->getNom()])) {
+                    //mettre en cache
+                    $this->em->persist($cat);
+                    //enregistrer en BDD
+                    $this->em->flush();
+                    //message de confirmation
+                    $type = "success";
+                    $message = "La catégorie a été ajouté";
+                }
+                //test si la catégorie existe
+                else {
+                    //message d'erreur
+                    $type = "danger";
+                    $message = "La catégorie existe déja";
+                }
             }
-            //test si la catégorie existe
-            else{
-                $type = "danger";
-                $message = "La catégorie existe déja";
+            //test le formulaire n'est pas valide
+            else {
+                //récupération de l'erreur
+                $type = "warning";
+                $message = $form->getErrors(true)[0]->getMessage();
             }
+            //affichage des messages
             $this->addFlash($type, $message);
         }
-        return $this->render('categorie/index.html.twig',[
+        //rendu de la vue Twig
+        return $this->render('categorie/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }
