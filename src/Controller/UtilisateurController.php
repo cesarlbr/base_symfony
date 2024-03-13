@@ -29,7 +29,7 @@ class UtilisateurController extends AbstractController
             $em->persist($user);
             //enregistrer en BDD
             $em->flush();
-            $this->addFlash('success', "Le compte à bien été ajouté en BDD");
+            $this->addFlash('warning', "Le compte à bien été ajouté en BDD");
         }
         return $this->render('utilisateur/index.html.twig', [
             'form' => $form->createView(),
