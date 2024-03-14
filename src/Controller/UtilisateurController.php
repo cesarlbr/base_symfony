@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,10 +14,20 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UtilisateurController extends AbstractController
 {
-    #[Route('/utilisateur', name: 'app_utilisateur')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+
+    private EntityManagerInterface $em;
+    private UtilisateurRepository $userRepo;
+
+    public function __construct(EntityManagerInterface $em, UtilisateurRepository $userRepo)
     {
-        
+        $this->em = $em;
+        $this->userRepo = $userRepo;
+    }
+
+    #[Route('/utilisateur', name: 'app_utilisateur')]
+    public function addUser(Request $request, EntityManagerInterface $em): Response
+    {
+
         //créer un objet utilisateur
         $user = new Utilisateur();
         //créer un objet UtilisateurType (formulaire)
@@ -24,12 +35,26 @@ class UtilisateurController extends AbstractController
         //récupérer les données du fomulaire
         $form->handleRequest($request);
         //tester si le formulaire est submit
-        if($form->isSubmitted() ) {
+        if ($form->isSubmitted()) {
             //mettre en cache l'objet Utilisateur
-            $em->persist($user);
-            //enregistrer en BDD
-            $em->flush();
-            $this->addFlash('warning', "Le compte à bien été ajouté en BDD");
+            if ($form->isValid()) {
+                if (!$this->userRepo->findOneByEmail($user->getEmail())) {
+                    $user->setPassword(md5($user->getPassword()));
+                    $em->persist($user);
+                    //enregistrer en BDD
+                    $em->flush();
+                    $type = "success";
+                    $message = "Utilisateur ok";
+                } else {
+                    // dd($form->getErrors(true));
+                    $type = "warning";
+                    $message = "Utilisateur existant";
+                }
+                $this->addFlash($type, $message);
+            }else{
+                $type = "warning";
+                $message = $form->getErrors(1)[0]->getMessage();
+            } 
         }
         return $this->render('utilisateur/index.html.twig', [
             'form' => $form->createView(),
