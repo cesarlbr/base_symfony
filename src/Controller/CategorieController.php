@@ -11,7 +11,7 @@ use App\Entity\Categorie;
 use App\Form\CategorieType;
 use App\Repository\CategorieRepository;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class CategorieController extends AbstractController
@@ -73,5 +73,22 @@ class CategorieController extends AbstractController
         return $this->render('categorie/index.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/categorie/validate', name : 'app_categorie_validate')]
+    public function validCategorie(ValidatorInterface $validatorInterface) : Response 
+    {
+        //instancier un objet
+        $cat = new Categorie();
+        //setter les attributs (avec une erreur)
+        $cat->setNom('t');
+        //récupération des erreurs
+        $errors = $validatorInterface->validate($cat);
+        //test s'il y a des erreurs
+        if(count($errors) > 0) {
+            //récupération du premier message d'erreur
+            return new Response($errors[0]->getMessage());
+        }
+        return new Response('La catégorie est valide');
     }
 }
